@@ -84,35 +84,35 @@ export default function ChatWindow({ friend, onStartCall, onBack }: any) {
     return (
         <div className="flex flex-col h-full bg-white animate-in fade-in duration-300">
             {/* Header */}
-            <div className="p-4 border-b flex items-center justify-between bg-white shadow-sm z-10">
-                <div className="flex items-center gap-3">
-                    <Button variant="ghost" size="icon" className="md:hidden" onClick={onBack}>
+            <div className="p-3 md:p-4 border-b flex items-center justify-between bg-white sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/90">
+                <div className="flex items-center gap-2 md:gap-3 overflow-hidden">
+                    <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 -ml-1 text-gray-500 hover:text-blue-600 transition-colors" onClick={onBack}>
                         <ArrowLeft className="w-5 h-5" />
                     </Button>
-                    <div className="relative">
-                        <Avatar className="h-10 w-10 ring-2 ring-blue-50">
+                    <div className="relative shrink-0">
+                        <Avatar className="h-10 w-10 md:h-11 md:w-11 ring-2 ring-blue-50">
                             <AvatarImage src={friend.avatar} />
-                            <AvatarFallback>{friend.username[0].toUpperCase()}</AvatarFallback>
+                            <AvatarFallback className="bg-blue-600 text-white">{friend.username[0].toUpperCase()}</AvatarFallback>
                         </Avatar>
                         {friend.online && (
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
+                            <span className="absolute bottom-0.5 right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></span>
                         )}
                     </div>
-                    <div>
-                        <h2 className="font-semibold text-gray-900">{friend.username}</h2>
-                        <p className={`text-[10px] font-medium ${friend.online ? 'text-green-500' : 'text-gray-400'}`}>
-                            {friend.online ? 'Online' : 'Offline'}
+                    <div className="overflow-hidden">
+                        <h2 className="font-bold text-gray-900 leading-tight truncate">{friend.username}</h2>
+                        <p className={`text-[10px] md:text-xs font-semibold ${friend.online ? 'text-green-500' : 'text-gray-400'}`}>
+                            {friend.online ? 'Active Now' : 'Offline'}
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-1 md:gap-2">
-                    <Button variant="ghost" size="icon" className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors" onClick={onStartCall}>
-                        <Phone className="w-5 h-5" />
+                <div className="flex items-center gap-0.5 md:gap-2">
+                    <Button variant="ghost" size="icon" className="h-10 w-10 text-blue-500 bg-blue-50/50 md:bg-transparent hover:text-blue-600 md:hover:bg-blue-50 transition-colors rounded-full" onClick={onStartCall}>
+                        <Phone className="w-5 h-5 fill-current opacity-80" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="text-gray-500 hover:text-blue-600 hover:bg-blue-50 transition-colors" onClick={onStartCall}>
-                        <Video className="w-5 h-5" />
+                    <Button variant="ghost" size="icon" className="h-10 w-10 text-blue-500 bg-blue-50/50 md:bg-transparent hover:text-blue-600 md:hover:bg-blue-50 transition-colors rounded-full" onClick={onStartCall}>
+                        <Video className="w-5 h-5 fill-current opacity-80" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="text-gray-500 hover:text-gray-900">
+                    <Button variant="ghost" size="icon" className="h-10 w-10 text-gray-400 hover:text-gray-900 rounded-full">
                         <MoreVertical className="w-5 h-5" />
                     </Button>
                 </div>

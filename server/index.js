@@ -11,14 +11,15 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174"],
+        origin: "*",
+        //[process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174", "http://192.168.0.198:5173"]
         methods: ["GET", "POST"],
         credentials: true
     }
 });
 
 app.use(cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174"],
+    origin: "*",
     credentials: true
 }));
 app.use(express.json());
@@ -95,7 +96,8 @@ io.on('connection', (socket) => {
         io.to(userToCall.toString()).emit('incoming-call', {
             signal: signalData,
             from: from.toString(),
-            name
+            name,
+            avatar: data.avatar
         });
     });
 
