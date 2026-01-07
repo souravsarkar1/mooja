@@ -10,6 +10,7 @@ import Reels from './pages/reels/Reels';
 import Profile from './pages/profile/Profile';
 import SingleProfile from './pages/profile/SingleProfile';
 import AvailableChatFriend from './pages/chat/AvailableChatFriend';
+import { Toaster } from 'sonner';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((state) => state.token);
@@ -19,6 +20,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <div>
+      <Toaster position="top-center" duration={2000} />
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />

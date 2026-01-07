@@ -10,14 +10,8 @@ import {
     Bookmark,
     MoreHorizontal,
     Plus,
-    Home,
-    Search,
-    // PlusSquare,
-    Film,
-    // User,
     Sparkles,
     TrendingUp,
-    // Music2,
     MapPin,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -85,7 +79,7 @@ const Feed = () => {
     const navigate = useNavigate();
     const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
     const [savedPosts, setSavedPosts] = useState<Set<string>>(new Set());
-    const [activeTab, setActiveTab] = useState('home');
+    // const [activeTab, setActiveTab] = useState('home');
 
     const toggleLike = (postId: string) => {
         setLikedPosts((prev) => {
@@ -315,7 +309,7 @@ const Feed = () => {
             </button>
 
             {/* Premium Bottom Navigation */}
-           
+
 
             {/* Custom Scrollbar Hide CSS */}
             <style>{`
