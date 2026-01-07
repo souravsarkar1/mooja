@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '@/store/useAuthStore';
 import api from '@/api/api';
@@ -13,7 +13,7 @@ export default function Login() {
     const [loading, setLoading] = useState(false);
     const setAuth = useAuthStore((state) => state.setAuth);
     const navigate = useNavigate();
-
+    const { user, token } = useAuthStore((state) => state)
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -27,6 +27,10 @@ export default function Login() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (user && token) navigate(-1);
+    }, [user, token])
 
     return (
         <div className="flex h-screen items-center justify-center bg-gray-50 p-4">

@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react'
 import path from "path"
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [
     react(),
@@ -20,5 +19,9 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  server: {
+    host: true, // important for ngrok / LAN access
+    allowedHosts: true, // 👈 allow ngrok & any external host
   },
 })
