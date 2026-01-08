@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://192.168.0.198:5001/api',
+    baseURL: 'https://mooja-server.onrender.com/api',
 });
 
 api.interceptors.request.use((config) => {
