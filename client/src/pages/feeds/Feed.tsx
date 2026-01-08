@@ -304,7 +304,7 @@ const Feed = () => {
             </ScrollArea>
 
             {/* Floating Create Button */}
-            <button className="fixed right-4 bottom-24 w-14 h-14 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 rounded-full shadow-lg shadow-violet-300 flex items-center justify-center text-white transform hover:scale-105 active:scale-95 transition-all z-40">
+            <button onClick={() => navigate('/create')} className="fixed right-4 bottom-24 w-14 h-14 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500 rounded-full shadow-lg shadow-violet-300 flex items-center justify-center text-white transform hover:scale-105 active:scale-95 transition-all z-40">
                 <Plus className="w-7 h-7" />
             </button>
 

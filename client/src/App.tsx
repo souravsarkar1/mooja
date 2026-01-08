@@ -11,6 +11,7 @@ import Profile from './pages/profile/Profile';
 import SingleProfile from './pages/profile/SingleProfile';
 import AvailableChatFriend from './pages/chat/AvailableChatFriend';
 import { Toaster } from 'sonner';
+import CreatePage from './pages/create/CreatePage';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((state) => state.token);
@@ -78,6 +79,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Reels />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create"
+            element={
+              <ProtectedRoute>
+                <CreatePage />
               </ProtectedRoute>
             }
           />
