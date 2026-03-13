@@ -42,7 +42,7 @@ export default function CallModal({ open, onOpenChange, caller, incoming, signal
 
                     peer.on('signal', (data) => {
                         const targetId = (caller._id || caller.id).toString();
-                        console.log("Emitting call-user to:", targetId);
+                        // console.log("Emitting call-user to:", targetId);
                         socket.emit('call-user', {
                             userToCall: targetId,
                             signalData: data,
