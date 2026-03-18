@@ -22,7 +22,7 @@ const SearchPage = () => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState<SearchResult[]>([]);
     const [discoverUsers, setDiscoverUsers] = useState<SearchResult[]>([]);
-    const [searching, setSearching] = useState(false);
+    const [_, setSearching] = useState(false);
 
     useEffect(() => {
         fetchDiscoverUsers();

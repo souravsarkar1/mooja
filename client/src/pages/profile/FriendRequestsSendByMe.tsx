@@ -3,7 +3,7 @@ import  { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
-import { Check, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface FriendRequest {
   _id: string;

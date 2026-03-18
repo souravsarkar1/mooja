@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
     ArrowLeft,
     Grid2X2,
-    MessageCircle,
     UserPlus,
     MoreVertical,
     Sparkles,
