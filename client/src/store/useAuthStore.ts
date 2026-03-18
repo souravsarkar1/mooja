@@ -5,12 +5,19 @@ interface User {
     username: string;
     email: string;
     avatar?: string;
+    name?: string;
+    bio?: string;
+    location?: string;
+    website?: string;
+    phone?: string;
+    isFirstLogin?: boolean;
 }
 
 interface AuthState {
     user: User | null;
     token: string | null;
     setAuth: (user: User, token: string) => void;
+    updateUser: (user: User) => void;
     logout: () => void;
 }
 
@@ -21,6 +28,10 @@ export const useAuthStore = create<AuthState>((set) => ({
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('token', token);
         set({ user, token });
+    },
+    updateUser: (user) => {
+        localStorage.setItem('user', JSON.stringify(user));
+        set({ user });
     },
     logout: () => {
         localStorage.removeItem('user');

@@ -12,6 +12,13 @@ import SingleProfile from './pages/profile/SingleProfile';
 import AvailableChatFriend from './pages/chat/AvailableChatFriend';
 import { Toaster } from 'sonner';
 import CreatePage from './pages/create/CreatePage';
+import { useEffect } from 'react';
+import { logEvent } from 'firebase/analytics';
+import { analytics } from './firebase';
+import EditProfile from './pages/profile/EditProfile';
+import FriendRequestToMe from './pages/profile/FriendRequestToMe';
+import FriendRequestsSendByMe from './pages/profile/FriendRequestsSendByMe';
+
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((state) => state.token);
@@ -19,6 +26,13 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+
+
+  useEffect(()=>{
+    logEvent(analytics, "app_initialized", {
+      platform : "web"
+    })
+  },[])
   return (
     <div>
       <Toaster position="top-center" duration={2000} />
@@ -57,6 +71,31 @@ export default function App() {
                 <SingleProfile />
               </ProtectedRoute>
             }
+          />
+
+          <Route
+          path='/profile/friend-requests'
+          element={
+            <ProtectedRoute>
+              <FriendRequestToMe/>
+            </ProtectedRoute>
+          }
+          />
+          <Route
+          path='/profile/friend-requests-by-me'
+          element={
+            <ProtectedRoute>
+              <FriendRequestsSendByMe/>
+            </ProtectedRoute>
+          }
+          />
+          <Route
+          path='/profile/edit-profile'
+          element={
+            <ProtectedRoute>
+              <EditProfile/>
+            </ProtectedRoute>
+          }
           />
           <Route
             path="/search"

@@ -4,7 +4,8 @@ const { Server } = require('socket.io');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger");
 dotenv.config();
 
 const app = express();
@@ -24,9 +25,17 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/', (req, res) => res.send('Chat API is running...'));
+app.get("/api-docs-test", (req, res) => {
+  res.send("Swagger route working");
+});
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/user'));
 app.use('/api/chat', require('./routes/chat'));
+app.use(
+  "/api-docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec)
+);
 
 const PORT = process.env.PORT || 5001;
 

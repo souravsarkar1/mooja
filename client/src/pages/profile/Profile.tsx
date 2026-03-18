@@ -1,4 +1,4 @@
-// import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Settings,
@@ -16,28 +16,89 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/useAuthStore';
+import api from '@/api/api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
+import { LogoutModal } from './LogoutModal';
+
+interface ProfileResponse {
+    _id: string;
+    username: string;
+    email: string;
+    avatar?: string;
+    name?: string;
+    bio?: string;
+    location?: string;
+    website?: string;
+    phone?: string;
+    createdAt?: string;
+    friends?: Array<{ _id: string }>;
+}
 
 const Profile = () => {
-    const { user, logout } = useAuthStore();
+    const { user, logout, updateUser } = useAuthStore();
     const navigate = useNavigate();
-    // const [activeTab, setActiveTab] = useState('posts');
-
+    const [loading, setLoading] = useState(true);
+    const [profile, setProfile] = useState<ProfileResponse | null>(null);
+    const [isOpenLogoutModal, setIsOpenLogoutModal] = useState(false);
     const handleLogout = () => {
-        logout();
-        navigate('/login');
+        setIsOpenLogoutModal(true);
     };
 
     // Mock data for posts grid
-    const mockPosts = Array(9).fill(null).map((_, i) => ({
+    const mockPosts = Array(90).fill(null).map((_, i) => ({
         id: i,
         url: `https://picsum.photos/seed/${i + 50}/600/600`,
         likes: Math.floor(Math.random() * 1000),
         comments: Math.floor(Math.random() * 100)
     }));
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const { data } = await api.get('/users/me');
+                setProfile(data);
+                updateUser({
+                    id: data._id,
+                    username: data.username,
+                    email: data.email,
+                    avatar: data.avatar,
+                    name: data.name,
+                    bio: data.bio,
+                    location: data.location,
+                    website: data.website,
+                    phone: data.phone,
+                });
+            } catch (error: any) {
+                toast.error(error.response?.data?.message || 'Failed to load profile');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, [updateUser]);
+
+    const handleEditProfile = () => {
+        navigate('/profile/edit-profile');
+    };
+    const handleFriendRequests= () => {
+        navigate('/profile/friend-requests');
+    };
+
+    const displayName = profile?.name?.trim() || user?.name?.trim() || profile?.username || user?.username || 'Profile';
+    const bio = profile?.bio?.trim() || user?.bio?.trim() || 'Add a short bio so people can get to know you.';
+    const joinedDate = profile?.createdAt
+        ? new Date(profile.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+        : 'Recently joined';
+    const stats = [
+        { label: 'Posts', value: '128' },
+        { label: 'Followers', value: '12.5K' },
+        { label: 'Following', value: String(profile?.friends?.length || 0) }
+    ];
 
     return (
         <div className="min-h-screen bg-white pb-20">
@@ -73,9 +134,9 @@ const Profile = () => {
                     >
                         <div className="p-1 rounded-[1.8rem] bg-gradient-to-tr from-violet-500 to-fuchsia-500">
                             <Avatar className="h-28 w-28 rounded-[1.7rem] border-4 border-white">
-                                <AvatarImage src={user?.avatar} />
+                                <AvatarImage src={profile?.avatar || user?.avatar} />
                                 <AvatarFallback className="bg-violet-50 text-violet-600 text-3xl font-black">
-                                    {user?.username?.[0].toUpperCase()}
+                                    {(profile?.username || user?.username || 'U')[0]?.toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>
                         </div>
@@ -83,48 +144,56 @@ const Profile = () => {
 
                     <div className="mt-4 text-center">
                         <div className="flex items-center justify-center gap-2">
-                            <h1 className="text-2xl font-black text-gray-900 tracking-tight">{user?.username}</h1>
+                            <h1 className="text-2xl font-black text-gray-900 tracking-tight">{displayName}</h1>
                             <Sparkles className="w-5 h-5 text-violet-500 animate-pulse" />
                         </div>
-                        <p className="text-gray-500 font-medium text-sm">@{user?.username?.toLowerCase()}</p>
+                        <p className="text-gray-500 font-medium text-sm">@{(profile?.username || user?.username || 'profile').toLowerCase()}</p>
                     </div>
 
                     {/* Stats */}
                     <div className="flex justify-center gap-8 mt-6 w-full max-w-sm">
-                        <StatItem label="Posts" value="128" />
-                        <StatItem label="Followers" value="12.5K" />
-                        <StatItem label="Following" value="842" />
+                        {stats.map((stat) => (
+                            <StatItem key={stat.label} label={stat.label} value={stat.value} />
+                        ))}
                     </div>
 
                     <div className="flex gap-3 mt-8 w-full max-w-md">
-                        <Button className="flex-1 rounded-2xl bg-gray-900 hover:bg-black text-white font-bold h-12 shadow-lg shadow-gray-200">
+                        <Button onClick={handleEditProfile} className="flex-1 rounded-2xl bg-gray-900 hover:bg-black text-white font-bold h-12 shadow-lg shadow-gray-200">
                             <Edit3 className="w-4 h-4 mr-2" />
                             Edit Profile
                         </Button>
-                        <Button variant="outline" className="flex-1 rounded-2xl border-gray-200 font-bold h-12 hover:bg-gray-50">
-                            Share Profile
+                        <Button onClick={handleFriendRequests} variant="outline" className="flex-1 rounded-2xl border-gray-200 font-bold h-12 hover:bg-gray-50">
+                            Friend Requests
                         </Button>
                     </div>
 
                     {/* Bio & Links */}
                     <div className="mt-8 text-center space-y-3 max-w-md">
                         <p className="text-gray-700 text-sm leading-relaxed font-medium">
-                            ✨ Creating digital magic | 📸 Photography & Tech
-                            📍 Living life in high definition
+                            {loading ? 'Loading your profile...' : bio}
                         </p>
                         <div className="flex flex-wrap justify-center gap-4 text-[12px] font-bold text-gray-400">
                             <div className="flex items-center gap-1">
-                                <MapPin size={14} className="text-violet-500" />
-                                <span>San Francisco</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                                <LinkIcon size={14} className="text-fuchsia-500" />
-                                <span className="text-violet-600">mooja.io/creative</span>
-                            </div>
-                            <div className="flex items-center gap-1">
                                 <Calendar size={14} />
-                                <span>Joined Dec 2023</span>
+                                <span>{joinedDate}</span>
                             </div>
+                            {(profile?.location || user?.location) ? (
+                                <div className="flex items-center gap-1">
+                                    <MapPin size={14} className="text-violet-500" />
+                                    <span>{profile?.location || user?.location}</span>
+                                </div>
+                            ) : null}
+                            {(profile?.website || user?.website) ? (
+                                <a
+                                    href={profile?.website || user?.website}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-1"
+                                >
+                                    <LinkIcon size={14} className="text-fuchsia-500" />
+                                    <span className="text-violet-600">{(profile?.website || user?.website || '').replace(/^https?:\/\//, '')}</span>
+                                </a>
+                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -211,6 +280,7 @@ const Profile = () => {
                     </TabsContent>
                 </Tabs>
             </div>
+            <LogoutModal onClose={()=> setIsOpenLogoutModal(false)} isOpen={isOpenLogoutModal} logout={logout}/>
         </div>
     );
 };

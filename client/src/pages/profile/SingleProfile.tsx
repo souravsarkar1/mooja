@@ -25,6 +25,9 @@ interface UserProfile {
     email: string;
     avatar?: string;
     online: boolean;
+    bio: string;
+    location: string;
+    website: string;
 }
 
 const SingleProfile = () => {
@@ -39,6 +42,7 @@ const SingleProfile = () => {
             try {
                 const { data } = await api.get(`/users/${id}`);
                 setUser(data);
+                console.log(data);
             } catch (err) {
                 console.error('Error fetching profile:', err);
                 navigate('/search');
@@ -49,8 +53,18 @@ const SingleProfile = () => {
         if (id) fetchUser();
     }, [id, navigate]);
 
+const handleAddFriend = async()=>{
+    try {
+        const res  = await api.post("/users/friend-request", {recipientId : user?._id});
+        setIsFollowed(!isFollowed)
+        console.log(res.data);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
     // Mock posts for other user
-    const mockPosts = Array(6).fill(null).map((_, i) => ({
+    const mockPosts = Array(600).fill(null).map((_, i) => ({
         id: i,
         url: `https://picsum.photos/seed/${id}${i}/600/600`,
     }));
@@ -63,6 +77,8 @@ const SingleProfile = () => {
         );
     }
 
+
+    
     return (
         <div className="min-h-screen bg-white pb-20">
             {/* Nav Header */}
@@ -131,26 +147,28 @@ const SingleProfile = () => {
                     {/* Actions */}
                     <div className="flex gap-3 mt-8 w-full max-w-sm">
                         <Button
-                            onClick={() => setIsFollowed(!isFollowed)}
+                            onClick={handleAddFriend}
                             className={`flex-1 rounded-2xl font-bold h-12 transition-all duration-300 ${isFollowed ? 'bg-gray-100 text-gray-900 hover:bg-gray-200' : 'bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white shadow-lg shadow-violet-200'}`}
                         >
-                            {isFollowed ? 'Following' : <> <UserPlus className="w-4 h-4 mr-2" /> Follow </>}
+                            {isFollowed ? 'Remove Friend Request' : <> <UserPlus className="w-4 h-4 mr-2" /> Add Friend </>}
                         </Button>
-                        <Button
+                        {/* <Button
                             onClick={() => navigate(`/chat/${user?._id}`)}
                             variant="outline"
                             className="flex-1 rounded-2xl border-gray-200 font-bold h-12 hover:bg-violet-50 hover:border-violet-200 hover:text-violet-600"
                         >
                             <MessageCircle className="w-4 h-4 mr-2" />
                             Message
-                        </Button>
+                        </Button> */}
                     </div>
 
                     {/* Metadata */}
                     <div className="mt-8 flex flex-col items-center space-y-3">
                         <p className="text-gray-600 text-[13px] font-medium text-center px-4">
-                            Exploring the intersection of art and code. 🎨💻
-                            Always down for a collab!
+                            {
+                                //@ts-ignore
+                                user.bio
+                            }
                         </p>
                         <div className="flex gap-4">
                             <MetadataItem icon={<MapPin size={12} />} text="Worldwide" />
